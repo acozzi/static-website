@@ -33,4 +33,4 @@ deploy website:
   stage: deploy
   script:
     - npm install --global surge
-    - surge --proyect ./public --domain jafy.surge.sh
+    - surge --project ./public --domain jafy.surge.sh
