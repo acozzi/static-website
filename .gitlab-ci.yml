@@ -4,6 +4,7 @@ stages:
   - build
   - test
   - deploy
+  - deployment tests
 
 build website:
   stage: build
@@ -34,3 +35,9 @@ deploy website:
   script:
     - npm install --global surge
     - surge --project ./public --domain jafy.surge.sh
+
+test deployment:
+  image: alpine
+  stage: deployment tests
+  script:
+    - curl "https://jafy.surge.sh/" | tac | tac | grep -q "Gatsby"
