@@ -37,6 +37,8 @@ deploy website:
     - surge --project ./public --domain jafy.surge.sh
 
 test deployment:
+  image: alpine
   stage: deployment tests
   script:
+    - apk --no-cache add curl
     - curl "https://jafy.surge.sh/" | tac | tac | grep -q "Gatsby"
