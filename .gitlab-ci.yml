@@ -6,6 +6,11 @@ stages:
   - deploy
   - deployment tests
 
+cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+
 build website:
   stage: build
   script:
@@ -43,4 +48,5 @@ test deployment:
   stage: deployment tests
   script:
     - apk --no-cache add curl
-    - curl "https://jafy.surge.sh/" | tac | tac | grep -q "Gatsby"
+    - curl -s "https://jafy.surge.sh/" | grep -q "Gatsby"
+    - curl -s "https://jafy.surge.sh/" | grep -q "$CI_COMMIT_SHORT_SHA"
