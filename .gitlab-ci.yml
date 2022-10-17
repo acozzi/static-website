@@ -10,6 +10,7 @@ cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
       - node_modules/
+    policy: pull
 
 build website:
   stage: build
@@ -25,6 +26,7 @@ build website:
 test artifact:
   image: alpine
   stage: test
+  cache: {}
   script:
     - grep -q "Gatsby" ./public/index.html
 
@@ -46,6 +48,7 @@ deploy website:
 test deployment:
   image: alpine
   stage: deployment tests
+  cache: {}
   script:
     - apk --no-cache add curl
     - curl -s "https://jafy.surge.sh/" | grep -q "Gatsby"
