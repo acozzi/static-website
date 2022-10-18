@@ -23,16 +23,12 @@ build website:
   artifacts:
     paths:
       - ./public
-  except:
-    - schedules
+
 test artifact:
   image: alpine
   stage: test
-  cache: {}
   script:
     - grep -q "Gatsby" ./public/index.html
-  except:
-    - schedules
 
 test website:
   stage: test
@@ -42,40 +38,23 @@ test website:
     - gatsby serve &
     - sleep 3
     - curl "http://localhost:9000" | tac | tac | grep -q "Gatsby"
-  except:
-    - schedules
 
-deploy to staging:
+deploy staging:
   stage: deploy staging 
   script:
     - npm install --global surge
     - surge --project ./public --domain jafy-staging.surge.sh
 
-deploy to production:
+deploy production:
   stage: deploy production 
   script:
     - npm install --global surge
     - surge --project ./public --domain jafy.surge.sh
-  except:
-    - schedules
 
 production tests:
   image: alpine
   stage: production tests
-  cache: {}
   script:
     - apk --no-cache add curl
     - curl -s "https://jafy.surge.sh/" | grep -q "Gatsby"
     - curl -s "https://jafy.surge.sh/" | grep -q "$CI_COMMIT_SHORT_SHA"
-  except:
-    - schedules
-
-update cache:
-  stage: cache
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - node_modules/
-    policy: push
-  script:
-    - npm install
