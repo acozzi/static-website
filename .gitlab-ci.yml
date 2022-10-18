@@ -1,16 +1,16 @@
-image: node
+image: node:10
 
 stages:
   - build
   - test
-  - deploy
-  - deployment tests
+  - deploy staging
+  - deploy production
+  - production tests
 
 cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
       - node_modules/
-    policy: pull
 
 build website:
   stage: build
@@ -39,15 +39,21 @@ test website:
     - sleep 3
     - curl "http://localhost:9000" | tac | tac | grep -q "Gatsby"
 
-deploy website:
-  stage: deploy
+deploy to staging:
+  stage: deploy staging 
+  script:
+    - npm install --global surge
+    - surge --project ./public --domain jafy-staging.surge.sh
+
+deploy to production:
+  stage: deploy production 
   script:
     - npm install --global surge
     - surge --project ./public --domain jafy.surge.sh
 
-test deployment:
+production tests:
   image: alpine
-  stage: deployment tests
+  stage: production tests
   cache: {}
   script:
     - apk --no-cache add curl
