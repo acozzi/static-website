@@ -41,12 +41,18 @@ test website:
 
 deploy staging:
   stage: deploy staging 
+  environment:
+    name: staging 
+    url: https://jafy-staging.surge.sh/
   script:
     - npm install --global surge
     - surge --project ./public --domain jafy-staging.surge.sh
 
 deploy production:
   stage: deploy production 
+  environment:
+    name: production 
+    url: https://jafy.surge.sh/
   script:
     - npm install --global surge
     - surge --project ./public --domain jafy.surge.sh
