@@ -12,6 +12,10 @@ cache:
     paths:
       - node_modules/
 
+variables:
+  STAGING_DOMAIN: jafy-staging.surge.sh
+  PRODUCTION_DOMAIN: jafy.surge.sh
+
 build website:
   stage: build
   script:
@@ -43,24 +47,24 @@ deploy staging:
   stage: deploy staging 
   environment:
     name: staging 
-    url: https://jafy-staging.surge.sh/
+    url: https://$STAGING_DOMAIN/
   script:
     - npm install --global surge
-    - surge --project ./public --domain jafy-staging.surge.sh
+    - surge --project ./public --domain $STAGING_DOMAIN
 
 deploy production:
   stage: deploy production 
   environment:
     name: production 
-    url: https://jafy.surge.sh/
+    url: https://$PRODUCTION_DOMAIN/
   script:
     - npm install --global surge
-    - surge --project ./public --domain jafy.surge.sh
+    - surge --project ./public --domain $PRODUCTION_DOMAIN
 
 production tests:
   image: alpine
   stage: production tests
   script:
     - apk --no-cache add curl
-    - curl -s "https://jafy.surge.sh/" | grep -q "Gatsby"
-    - curl -s "https://jafy.surge.sh/" | grep -q "$CI_COMMIT_SHORT_SHA"
+    - curl -s "https://$PRODUCTION_DOMAIN/" | grep -q "Gatsby"
+    - curl -s "https://$PRODUCTION_DOMAIN/" | grep -q "$CI_COMMIT_SHORT_SHA"
