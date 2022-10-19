@@ -94,8 +94,9 @@ deploy production:
   allow_failure: false
   only: 
     - main
-  script:
+  before_script:
     - npm install --global surge
+  script:
     - surge --project ./public --domain $PRODUCTION_DOMAIN
 
 production tests:
